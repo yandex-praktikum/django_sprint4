@@ -8,7 +8,6 @@ import pytest
 import pytz
 from django.db.models import TextField, DateTimeField, ForeignKey, Model
 from django.forms import BaseForm
-from django.test import Client
 from django.utils import timezone
 
 from conftest import _TestModelAttrs, KeyVal, get_a_post_get_response_safely
