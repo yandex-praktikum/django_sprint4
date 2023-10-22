@@ -1,5 +1,6 @@
 from typing import Any
 from django.db import models
+from django.http import HttpRequest
 # Подключите к проекту пагинацию
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render
@@ -28,10 +29,18 @@ class IndexView(ListView):
 class PostDetailView(DetailView):
     model=Post
     pk_url_kwarg = POST_ID
-    form_class=CommentForm
+    form_class = CommentForm
     template_name = 'blog/detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = CommentForm()
+        context['comments'] = self.object.comments.select_related('author')
+        return context
+
+# Создайте страницу для публикации новых записей posts/create/
 # Reverse for 'create_post' not found. 'create_post' is not a valid view function or pattern name
+# 'Location' object has no attribute 'title'
 class PostCreateView(CreateView):
     model = Post
     form_class = PostForm
@@ -43,6 +52,7 @@ class PostDeleteView(DeleteView):
     form_class = PostForm
     template_name = 'blog/create.html'
     pk_url_kwarg = POST_ID
+    success_url = reverse_lazy('blog:index')
 
 
     def get_context_data(self, **kwargs):
@@ -99,8 +109,28 @@ class ProfileUpdateView(UpdateView):
 
 
 class CategoryPostListView(ListView):
+    model = Post
     paginate_by = POSTS_LIMIT
     template_name = 'blog/category.html'
+
+    def get(self, request: HttpRequest, *args, **kwargs):
+        self.object = get_object_or_404(
+            Category,
+            slug=self.kwargs['category_slug'],
+            is_published=True
+        )
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        category = self.object
+        return (Post.post_objects.select_related().
+                filter(category__slug=category.slug))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category = self.object
+        context['category'] = category
+        return context
 
 
 class CommentCreateView(CreateView):

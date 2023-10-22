@@ -15,7 +15,8 @@ urlpatterns = [
 # Reverse for 'login' not found. 'login' is not a valid view function or pattern name
     path('auth/', include('django.contrib.auth.urls')),
 # Reverse for 'registration' not found. 'registration' is not a valid view function or pattern name
-    path('auth/registration',
+# AssertionError: Убедитесь, что в головном файле с маршрутами переопределён маршрут `auth/registration/`
+    path('auth/registration/',
          CreateView.as_view(
              template_name='registration/registration_form.html',
              form_class=UserCreationForm,
