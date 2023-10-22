@@ -15,7 +15,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# Переопределять встроенную модель пользователя не требуется
 # AUTH_USER_MODEL = 'users.MyUser'
+
+# Убедитесь, что в настройке `EMAIL_FILE_PATH` указан путь `BASE_DIR / 'sent_emails'
+EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
+
+# module 'blogicum.settings' has no attribute 'MEDIA_ROOT'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Application definition
@@ -23,6 +30,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django_bootstrap5',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',

@@ -84,6 +84,8 @@ class Post(PublishedModel):
         related_name='posts',
         verbose_name='Категория'
     )
+    # В модели `Post` создайте поле типа `ImageField`, которое служит для хранения изображения публикации
+    image = models.ImageField('Изображение')
 
     objects = models.Manager()
     post_objects = PostManager()
@@ -95,3 +97,25 @@ class Post(PublishedModel):
 
     def __str__(self):
         return self.title[:10]
+
+# Убедитесь, что в файле `blog/models.py` объявлена модель комментария с полем `ForeignKey`, связывающим её с моделью `Post`
+class Comment(models.Model):
+    post=models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        verbose_name='Комментируемый пост'
+    )
+# В модели `Comment` создайте поле типа `ForeignKey`, которое задаёт автора комментария, связывая модель `blog.models.Comment` с моделью `blog.models.Post`. User??
+    author=models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Автор комментария'        
+    )
+# В модели `Comment` создайте поле типа `TextField`, которое задаёт текст комментария
+    text=models.TextField('Текст комментария')
+# В модели `Comment` создайте поле типа `DateTimeField`, которое задаёт дату комментария
+# В модели `Comment` в атрибуте `created_at` проверьте значение параметра `auto_now_add` на соответствие заданию
+    created_at=models.DateTimeField(
+        'Дата комментария',
+         auto_now_add=True
+         )
