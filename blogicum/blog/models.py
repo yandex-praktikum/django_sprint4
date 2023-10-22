@@ -11,7 +11,7 @@ LENGTH = 256
 
 
 class PostManager(models.Manager):
-    """Менеджер модель Post"""
+    '''Менеджер модель Post'''
     def get_queryset(self) -> QuerySet:
         return super().get_queryset().select_related(
             'category',
@@ -85,7 +85,8 @@ class Post(PublishedModel):
         verbose_name='Категория'
     )
     # В модели `Post` создайте поле типа `ImageField`, которое служит для хранения изображения публикации
-    image = models.ImageField('Изображение')
+    # You are trying to add a non-nullable field 'image' to post without a default; we can't do that (the database needs something to populate existing rows)
+    image = models.ImageField('Изображение', blank=True)
 
     objects = models.Manager()
     post_objects = PostManager()
