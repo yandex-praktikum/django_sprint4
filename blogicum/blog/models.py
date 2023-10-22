@@ -45,6 +45,7 @@ class Category(PublishedModel):
 
 class Location(PublishedModel):
     name = models.CharField('Название места', max_length=LENGTH)
+# 'Location' object has no attribute 'title'
 
     class Meta:
         verbose_name = 'местоположение'
@@ -120,3 +121,6 @@ class Comment(models.Model):
         'Дата комментария',
          auto_now_add=True
          )
+    
+    class Meta:
+        ordering = ('created_at',)
