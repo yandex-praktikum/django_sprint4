@@ -15,7 +15,7 @@ urlpatterns = [
 # Профили
 
 # Reverse for 'profile' not found. 'profile' is not a valid view function or pattern name
-    path('profile/<str:username>',
+    path('profile/<str:username>/',
          views.ProfileDetailView.as_view(), name='profile'),
 # Reverse for 'create_post' not found. 'create_post' is not a valid view function or pattern name        
     path('profile/create/',
