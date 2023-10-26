@@ -38,6 +38,16 @@ class PostDetailView(DetailView):
         context['comments'] = self.object.comments.select_related('author')
         return context
 
+    def get_object(self):
+        post = super().get_object()
+        post_id = self.kwargs[POST_ID]
+        if post.author == self.request.user:
+            return get_object_or_404(
+                Post.post_objects.post_object(), pk=post_id
+            )
+        return get_object_or_404(
+            Post.post_objects.published_posts(), pk=post_id
+        )
 # Создайте страницу для публикации новых записей posts/create/
 # Reverse for 'create_post' not found. 'create_post' is not a valid view function or pattern name
 # 'Location' object has no attribute 'title'
@@ -45,6 +55,11 @@ class PostCreateView(CreateView):
     model = Post
     form_class = PostForm
     template_name = 'blog/create.html'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
 
 
 class PostDeleteView(DeleteView):
@@ -91,6 +106,22 @@ class ProfileDetailView(DetailView):
     slug_url_kwarg = 'username'
     slug_field = 'username'
     context_object_name = 'profile'
+
+    def get_context_data(self, **kwargs):
+        author = self.object
+        # Выводим только посты автора на профиле автора
+        object_list = Post.post_objects.select_related()
+        if self.request.user == author:
+            # Выводим все посты автора на его собственном профиле
+            object_list = Post.post_objects.post_object()
+# Пагинация
+        object_list = object_list.filter(author=author)
+        context = super().get_context_data(**kwargs)
+        page_num = self.request.GET.get('page', 1)
+        paginator = Paginator(object_list, POSTS_LIMIT)
+        context['page_obj'] = paginator.get_page(page_num)
+
+        return context
 
  
 

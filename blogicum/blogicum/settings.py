@@ -30,15 +30,15 @@ MEDIA_ROOT = BASE_DIR / 'media'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-    'django_bootstrap5',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pages.apps.PagesConfig',
     'blog.apps.BlogConfig',
-    'debug_toolbar',
     'users',
+    'django_bootstrap5',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [

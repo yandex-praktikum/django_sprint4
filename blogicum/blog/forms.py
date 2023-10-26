@@ -5,12 +5,14 @@ from .models import Comment, Location, Post, User
 
 
 class CommentForm(ModelForm):
-    model=Comment
-    fields=('text',)
-    witgets={
+
+    class Meta:
+        model=Comment
+        fields=('text',)
+        witgets={
 # Поле для ввода коментария
-        'text': forms.Textarea({'rows': '4', 'cols': '50'})
-    }
+            'text': forms.Textarea({'rows': '4', 'cols': '50'})
+            }
 
 # Reverse for 'profile' not found. 'profile' is not a valid view function or pattern name
 class UserForm(ModelForm):

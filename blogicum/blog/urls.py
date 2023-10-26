@@ -8,11 +8,12 @@ urlpatterns = [
 # Главная страница
 
     path('', views.IndexView.as_view(), name='index'),
-    path('posts/<int:id>/', views.DeleteView.as_view(), name='post_detail'),
+    path('posts/<int:post_id>/', views.DeleteView.as_view(), name='post_detail'),
     path('category/<slug:category_slug>/',
          views.category_posts, name='category_posts'),
 
 # Профили
+# Удобно разделить дочерние url по тематическим частям и заинклюдить к родительским, выглядит читабельней и аккуратней
 
 # Reverse for 'profile' not found. 'profile' is not a valid view function or pattern name
     path('profile/<str:username>/',

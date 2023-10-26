@@ -45,14 +45,15 @@ class Category(PublishedModel):
 
 class Location(PublishedModel):
     name = models.CharField('Название места', max_length=LENGTH)
-# 'Location' object has no attribute 'title'
+
 
     class Meta:
         verbose_name = 'местоположение'
         verbose_name_plural = 'Местоположения'
 
     def __str__(self):
-        return self.title[:10]
+ # 'Location' object has no attribute 'title'
+        return self.name[:10]
 
 
 class Post(PublishedModel):
@@ -65,24 +66,22 @@ class Post(PublishedModel):
             'можно делать отложенные публикации.'
         )
     )
+# NOT NULL constraint failed: blog_post.author_id
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='posts',
         verbose_name='Автор публикации'
     )
     location = models.ForeignKey(
         Location,
         on_delete=models.SET_NULL,
         null=True,
-        related_name='posts',
         verbose_name='Местоположение'
     )
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
         null=True,
-        related_name='posts',
         verbose_name='Категория'
     )
     # В модели `Post` создайте поле типа `ImageField`, которое служит для хранения изображения публикации
