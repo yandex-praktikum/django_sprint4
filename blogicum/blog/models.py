@@ -1,13 +1,16 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
-from django.db.models.query import QuerySet
+from django.db.models import QuerySet, Count
 
 from core.models import PublishedModel
 
 
-User = get_user_model() # При замене модели пользователя не придётся вносить изменения по всему проекту: вместо прежней модели функция будет возвращать новую
 LENGTH = 256
+LIMIT = 10
+
+
+User = get_user_model() # При замене модели пользователя не придётся вносить изменения по всему проекту: вместо прежней модели функция будет возвращать новую
 
 
 class PostManager(models.Manager):
@@ -17,11 +20,13 @@ class PostManager(models.Manager):
             'category',
             'location',
             'author'
-        ).filter(
+        ).annotate(comment_count=Count('comments')).filter(
             is_published=True,
             category__is_published=True,
             pub_date__lte=timezone.now()
-        )
+# Убедитесь, что публикации передаются в контекст страницы профиля автора отсортированными по времени их публикации, «от новых к старым».
+# django.core.exceptions.FieldError: Cannot resolve keyword 'pub_date' into field. Choices are: author, author_id, created_at, id, post, post_id, text
+        ).order_by('-pub_date')
 
 
 class Category(PublishedModel):
@@ -40,7 +45,7 @@ class Category(PublishedModel):
         verbose_name_plural = 'Категории'
 
     def __str__(self):
-        return self.title[:10]
+        return self.title[:LIMIT]
 
 
 class Location(PublishedModel):
@@ -53,7 +58,7 @@ class Location(PublishedModel):
 
     def __str__(self):
  # 'Location' object has no attribute 'title'
-        return self.name[:10]
+        return self.name[:LIMIT]
 
 
 class Post(PublishedModel):
@@ -76,6 +81,8 @@ class Post(PublishedModel):
         Location,
         on_delete=models.SET_NULL,
         null=True,
+# Так же может быть пустым
+        blank=True,
         verbose_name='Местоположение'
     )
     category = models.ForeignKey(
@@ -89,7 +96,7 @@ class Post(PublishedModel):
     image = models.ImageField('Изображение', blank=True)
 
     objects = models.Manager()
-    post_objects = PostManager()
+    post_objects = PostManager() # Больше не нужно
 
     class Meta:
         verbose_name = 'публикация'

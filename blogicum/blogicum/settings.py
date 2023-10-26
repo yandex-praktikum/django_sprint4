@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django_bootstrap5',
     'debug_toolbar',
 ]
+# AttributeError: 'AnonymousUser' object has no attribute '_meta'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
